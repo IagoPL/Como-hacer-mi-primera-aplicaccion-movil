@@ -320,13 +320,3 @@ Este SRS:
 * Es **implementable sin interpretación**
 * Es **válido como base de referencia**
 * Permite que desarrolles **una app modelo completa**
-
----
-
-Si quieres, el siguiente paso natural es:
-
-* 🔹 Diseñar la **arquitectura técnica detallada**
-* 🔹 Empezar el **manual paso a paso de implementación**
-* 🔹 O crear el **repositorio base + estructura de carpetas**
-
-Dime cómo seguimos y a qué nivel de profundidad.

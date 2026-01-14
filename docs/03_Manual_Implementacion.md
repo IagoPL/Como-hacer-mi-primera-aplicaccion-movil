@@ -371,5 +371,3 @@ Al finalizar el proyecto, el alumno habrá construido:
 * Un sistema extensible.
 * Un proyecto organizado y documentado.
 * Una base sólida para proyectos más complejos.
-
----

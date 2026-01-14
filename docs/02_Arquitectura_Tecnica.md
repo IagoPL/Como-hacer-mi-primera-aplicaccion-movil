@@ -546,5 +546,3 @@ Se recomienda crear un “container” por plataforma para construir dependencia
 * UseCases (core con inyección por constructor)
 
 Esto evita singletons y facilita tests.
-
-

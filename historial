@@ -1,0 +1,65 @@
+Resumen de cambios - módulo core
+
+Fecha: 2026-01-14
+
+Se añadieron los siguientes artefactos para implementar el CORE (Java puro):
+
+- `core/pom.xml`: POM Maven para el módulo core (Java 11, JUnit 5).
+- `core/src/main/java/com/example/core/domain/Alarm.java`: Entidad alarma con id, etiqueta, hora y enabled.
+- `core/src/main/java/com/example/core/domain/AlarmOccurrence.java`: Ocurrencia concreta de alarma (Alarm + LocalDateTime).
+- `core/src/main/java/com/example/core/domain/AlarmState.java`: Enum con estados básicos.
+- `core/src/main/java/com/example/core/domain/AudioConfig.java`: Value object para configuración de audio.
+- `core/src/main/java/com/example/core/ports/AlarmRepository.java`: Interfaz (puerto) para persistencia de Alarm.
+- `core/src/main/java/com/example/core/service/NextTriggerCalculator.java`: Servicio que calcula el próximo trigger (implementación sencilla: hoy o mañana).
+- `core/src/main/java/com/example/core/service/OccurrenceResolver.java`: Servicio que resuelve la próxima ocurrencia usando el calculador.
+- `core/src/main/java/com/example/core/service/AudioConfigResolver.java`: Servicio que devuelve configuración de audio (default simple).
+- `core/src/main/java/com/example/core/service/TrackQueueService.java`: Cola en memoria para pistas a reproducir.
+- `core/src/main/java/com/example/core/usecase/SaveAlarmUseCase.java`: Caso de uso para guardar alarmas a través de `AlarmRepository`.
+- `core/src/main/java/com/example/core/usecase/TriggerFiredUseCase.java`: Caso de uso que encola pistas cuando una alarma dispara.
+- `core/src/main/java/com/example/core/usecase/StopAlarmUseCase.java`: Caso de uso que detiene la reproducción simulada (limpia la cola).
+- `core/src/main/java/com/example/core/util/DateUtils.java`: Utilitario de fecha/hora (abstracción de ahora para tests).
+- `core/src/main/java/com/example/core/Main.java`: Clase de prueba que crea alarmas ficticias y simula el flujo.
+- `core/src/test/java/com/example/core/NextTriggerCalculatorTest.java`: Test mínimo que verifica que el calculador devuelve una fecha.
+
+Notas:
+- Todos los archivos contienen Javadoc y comentarios explicativos pensados para los alumnos.
+- No se ha añadido persistencia real (sigue en `ports` para conectar implementaciones Android/Desktop).
+- Siguientes pasos recomendados: ejecutar `mvn -f core/pom.xml test` para verificar tests, implementar un repositorio en memoria y añadir tests adicionales.
+
+Fin del resumen.
+
+-- Actualización: 2026-01-14 (alineación SRS)
+
+Se añadieron y modificaron elementos para acercar el core al SRS y la arquitectura de referencia:
+
+- Dominio:
+	- `OccurrenceRule` (reglas de repetición, overrides de hora/audio, enabled por regla).
+	- `OccurrenceInstance` (instancia calculada que referencia la regla original).
+	- `TrackRef` (referencia a pista: uri/id).
+	- `AlarmPlaybackPlan` (plan de reproducción para alarmas).
+	- `Alarm` extendida con `baseAudioConfig` y lista de `OccurrenceRule`.
+
+- Puertos añadidos en `core/ports`:
+	- `ClockPort` (hora actual)
+	- `SchedulerPort` (programar/cancelar ocurrencias en la plataforma)
+	- `AudioControllerPort` (start/stop/snooze)
+	- `MusicProviderPort` (resolver pistas a partir de config)
+	- `PlaylistRepositoryPort` (recuperar playlists)
+
+- Servicios y casos de uso:
+	- `AudioConfigResolver` ahora devuelve `AudioConfigResolution` con error explícito.
+	- `TriggerFiredUseCase` actualizado para construir `AlarmPlaybackPlan` y delegar en `MusicProviderPort` + `AudioControllerPort`.
+	- `SnoozeUseCase` añadido: programa una ocurrencia temporal y notifica al `AudioControllerPort`.
+
+Notas:
+- Aún quedan tareas: implementar repositorio en memoria para `AlarmRepository`, adaptaciones de tests y ejemplo `Main` para usar los nuevos puertos.
+- Elegir estrategia de build (Maven vs Gradle) antes de integrar con Android para evitar confusión pedagógica.
+
+Fin de la actualización.
+
+-- Fix realizado: 2026-01-14 (corrección paquetes e imports)
+
+- Se normalizaron declaraciones de `package` e `imports` en todo `core/src` para usar `com.example.core.*`.
+- Se corrigieron archivos con ruta duplicada `core/src/main/java/core/src/main/java/...` ajustando su `package`.
+- Se actualizó `Main` y los tests para usar los paquetes corregidos.
+- Recomendación: asegurar JDK (javac) en PATH y ejecutar `mvn -f core/pom.xml test`.
