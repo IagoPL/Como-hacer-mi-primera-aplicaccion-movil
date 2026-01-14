@@ -17,6 +17,6 @@ public class NextTriggerCalculatorTest {
     public void calculateNextTrigger_notNull() {
         NextTriggerCalculator calc = new NextTriggerCalculator();
         Alarm alarm = new Alarm("Prueba", LocalTime.now().plusMinutes(5));
-    org.junit.jupiter.api.Assertions.assertNotNull(calc.calculateNextTrigger(alarm));
+        assertNotNull(calc.calculateNextTrigger(alarm));
     }
 }
